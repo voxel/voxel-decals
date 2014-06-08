@@ -65,10 +65,10 @@ void main() {\
 
 
   var decalsVertexArray = new Uint8Array([
-    0, 1, 0, 1,
-    0, 1, 1, 1,
-    1, 1, 1, 1,
-    1, 1, 0, 1,
+    0, 1, 0,
+    0, 1, 1,
+    1, 1, 1,
+    1, 1, 0,
   ]);
 
   // two adjacent triangles
@@ -87,7 +87,7 @@ void main() {\
   this.mesh = createVAO(gl, [
       { buffer: decalsBuf,
         type: gl.UNSIGNED_BYTE,
-        size: 4
+        size: 3
       }], indexBuf);
   this.mesh.length = decalsVertexCount;
 };
