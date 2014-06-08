@@ -74,7 +74,7 @@ DecalsPlugin.prototype.update = function() {
   // cube face vertices, indexed by normal (based on box-geometry)
   var cube = {
     // Back face
-    '-1|0|0': [
+    '0|0|1': [
     0, 0, 1,
     1, 0, 1,
     1, 1, 1,
@@ -84,7 +84,7 @@ DecalsPlugin.prototype.update = function() {
     0, 1, 1],
 
     // Front face
-    '1|0|0': [
+    '0|0|-1': [
     0, 0, 0,
     0, 1, 0,
     1, 1, 0,
@@ -114,7 +114,7 @@ DecalsPlugin.prototype.update = function() {
     0, 0, 1],
 
     // Left face
-    '0|0|1': [
+    '1|0|0': [
     1, 0, 0,
     1, 1, 0,
     1, 1, 1,
@@ -124,7 +124,7 @@ DecalsPlugin.prototype.update = function() {
     1, 0, 1],
 
     // Right face
-    '0|0|-1': [
+    '-1|0|0': [
     0, 0, 0,
     0, 0, 1,
     0, 1, 1,
@@ -144,18 +144,21 @@ DecalsPlugin.prototype.update = function() {
     // translate into position
     for (var j = 0; j < plane.length; j += 1) {
       plane[j] += this.info[i].position[j % 3];
+
+      // and raise out of surface by a small amount to prevent z-fighting
+      plane[j] += normal[j % 3] * 0.001;
     }
+    console.log(plane);
 
     vertices = vertices.concat(plane);
   }
 
   var gl = this.shell.gl;
 
-  var decalsBuf = createBuffer(gl, new Uint8Array(vertices));
+  var decalsBuf = createBuffer(gl, new Float32Array(vertices));
 
   this.mesh = createVAO(gl, [
       { buffer: decalsBuf,
-        type: gl.UNSIGNED_BYTE,
         size: 3
       }]);
   this.mesh.length = vertices.length/3;
