@@ -27,12 +27,12 @@ function DecalsPlugin(game, opts) {
   if (!this.stitchPlugin) throw new Error('voxel-stitch requires voxel-shader');
 
   this.info = [
-    {position:[0,0,0], normal:[-1,0,0]},
-    {position:[0,1,0], normal:[1,0,0]},
-    {position:[0,2,0], normal:[0,1,0]},
-    {position:[0,3,0], normal:[0,-1,0]},
-    {position:[0,4,0], normal:[0,0,1]},
-    {position:[0,5,0], normal:[0,0,-1]},
+    {position:[0,0,0], normal:[-1,0,0], texture:'furnace_top'},
+    {position:[0,1,0], normal:[+1,0,0], texture:'furnace_top'},
+    {position:[0,2,0], normal:[0,+1,0], texture:'furnace_top'},
+    {position:[0,3,0], normal:[0,-1,0], texture:'furnace_top'},
+    {position:[0,4,0], normal:[0,0,+1], texture:'furnace_front_on'},
+    {position:[0,5,0], normal:[0,0,-1], texture:'furnace_top'},
   ];
 
   this.enable();
@@ -146,23 +146,6 @@ DecalsPlugin.prototype.update = function() {
   var vertices = [];
   var uvArray = [];
 
-
-  // TODO: configurable texture
-  var tileIndex = 20; // TODO: configurable texture
-
-  // textures loaded from voxel-stitch updateTexture event
-  var tileUV = this.stitchPlugin.getTextureUV('furnace_front_on');
-  if (!tileUV) throw new Error('failed to load texture');
-
-  // cover the texture tile over the two triangles forming a flat plane
-  var planeUV = [
-    tileUV[3],
-    tileUV[0],
-    tileUV[1],
-
-    tileUV[2],
-  ];
-
   for (var i = 0; i < this.info.length; i += 1) {
     // start with plane corresponding to desired cube face
     var normal = this.info[i].normal;
@@ -178,8 +161,19 @@ DecalsPlugin.prototype.update = function() {
 
     vertices = vertices.concat(plane);
 
-    // texturing
-  
+    // texturing (textures loaded from voxel-stitch updateTexture event)
+    var tileUV = this.stitchPlugin.getTextureUV(this.info[i].texture);
+    if (!tileUV) throw new Error('failed to load decal texture: ' + this.info[i].texture + ' for ' + this.info[i]);
+
+    // cover the texture tile over the two triangles forming a flat plane
+    var planeUV = [
+      tileUV[3],
+      tileUV[0],
+      tileUV[1],
+
+      tileUV[2],
+    ];
+
     // rotate UVs so texture is always facing up
     var r = 0;
     if (normal[0] === -1 || 
