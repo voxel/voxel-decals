@@ -174,17 +174,23 @@ DecalsPlugin.prototype.update = function() {
     vertices = vertices.concat(plane);
 
     // texturing
+  
+    // rotate UVs so texture is always facing up
     var r = 0;
+    if (normal[0] === -1 || 
+        normal[1] === -1 ||
+        normal[2] === 1) { // TODO: -1?
+      r = 3;
+    }
 
-    uvArray.push(planeUV[0][0]); uvArray.push(planeUV[0][1]);
-    uvArray.push(planeUV[1][0]); uvArray.push(planeUV[1][1]);
-    uvArray.push(planeUV[2][0]); uvArray.push(planeUV[2][1]);
+    uvArray.push(planeUV[(0 + r) % 4][0]); uvArray.push(planeUV[(0 + r) % 4][1]);
+    uvArray.push(planeUV[(1 + r) % 4][0]); uvArray.push(planeUV[(1 + r) % 4][1]);
+    uvArray.push(planeUV[(2 + r) % 4][0]); uvArray.push(planeUV[(2 + r) % 4][1]);
 
-    uvArray.push(planeUV[0][0]); uvArray.push(planeUV[0][1]);
-    uvArray.push(planeUV[2][0]); uvArray.push(planeUV[2][1]);
-    uvArray.push(planeUV[3][0]); uvArray.push(planeUV[3][1]);
+    uvArray.push(planeUV[(0 + r) % 4][0]); uvArray.push(planeUV[(0 + r) % 4][1]);
+    uvArray.push(planeUV[(2 + r) % 4][0]); uvArray.push(planeUV[(2 + r) % 4][1]);
+    uvArray.push(planeUV[(3 + r) % 4][0]); uvArray.push(planeUV[(3 + r) % 4][1]);
   }
-  console.log(uvArray);
 
   var uv = new Float32Array(uvArray);
 
