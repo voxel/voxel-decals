@@ -148,10 +148,12 @@ DecalsPlugin.prototype.update = function() {
 
 
   // TODO: configurable texture
-  var x = 0;
-  var y = 0;
-  var w = this.stitchPlugin.tileSize / (this.stitchPlugin.atlasSize * this.stitchPlugin.tilePad);
+  var tileIndex = 20; // TODO: configurable texture
+
+  var w = this.stitchPlugin.tileSize / this.stitchPlugin.atlasSize;
   var h = w;
+  var x = tileIndex * w;
+  var y = 0;
   var planeUV = [
     [x,     y + h],
     [x,     y    ],
