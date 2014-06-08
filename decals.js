@@ -2,7 +2,6 @@
 
 var createBuffer = require('gl-buffer');
 var createVAO = require('gl-vao');
-var createTexture = require('gl-texture2d');
 var glslify = require('glslify');
 var glm = require('gl-matrix');
 var mat4 = glm.mat4;
@@ -145,10 +144,11 @@ DecalsPlugin.prototype.update = function() {
   var uvArray = [];
 
 
+  // TODO: configurable texture
   var x = 0;
   var y = 0;
-  var w = 1;
-  var h = 1;
+  var w = 16/1024;
+  var h = 16/1024;
   var planeUV = [
     [x,     y + h],
     [x,     y    ],
@@ -209,8 +209,6 @@ DecalsPlugin.prototype.update = function() {
       }
       ]);
   this.mesh.length = vertices.length/3;
-
-  this.texture = createTexture(gl, require('lena'));
 };
 
 var scratch0 = mat4.create();
@@ -225,7 +223,9 @@ DecalsPlugin.prototype.render = function() {
     this.shader.uniforms.projection = this.shaderPlugin.projectionMatrix;
     this.shader.uniforms.view = this.shaderPlugin.viewMatrix;
     this.shader.uniforms.model = scratch0;
-    this.shader.uniforms.texture = this.texture.bind();
+
+    // use same atlas from voxel-shader TODO: can we reliably avoid binding? if already bound, seems to reuse
+    if (this.shaderPlugin.texture) this.shader.uniforms.texture = this.shaderPlugin.texture.bind();
 
     this.mesh.bind();
     this.mesh.draw(gl.TRIANGLES, this.mesh.length);
