@@ -2,6 +2,7 @@
   "name": "voxel-planes",
   "description": "",
   "version": "0.0.1",
+  "main": "planes.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:deathcap/voxel-planes.git"
@@ -10,6 +11,15 @@
     "voxel"
   ],
   "dependencies": {
+    "glslify": "^1.4.0",
+    "gl-matrix": "^2.2.1",
+    "gl-buffer": "^2.0.6",
+    "gl-vao": "^1.1.2"
+  },
+  "browserify": {
+    "transform": [
+      "glslify"
+    ]
   },
   "license": "MIT"
 }
