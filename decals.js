@@ -48,7 +48,7 @@ DecalsPlugin.prototype.disable = function() {
 
 DecalsPlugin.prototype.shaderInit = function() {
   // TODO: refactor with voxel-decals, voxel-chunkborder?
-  this.decalsShader = glslify({
+  this.shader = glslify({
     inline: true,
     vertex: "/* voxel-decals vertex shader */\
 attribute vec3 position;\
@@ -213,13 +213,13 @@ DecalsPlugin.prototype.render = function() {
   if (true) {
     var gl = this.shell.gl;
 
-    this.decalsShader.bind();
-    this.decalsShader.attributes.position.location = 0;
-    this.decalsShader.attributes.uv.location = 1;
-    this.decalsShader.uniforms.projection = this.shaderPlugin.projectionMatrix;
-    this.decalsShader.uniforms.view = this.shaderPlugin.viewMatrix;
-    this.decalsShader.uniforms.model = scratch0;
-    this.decalsShader.uniforms.texture = this.texture.bind();
+    this.shader.bind();
+    this.shader.attributes.position.location = 0;
+    this.shader.attributes.uv.location = 1;
+    this.shader.uniforms.projection = this.shaderPlugin.projectionMatrix;
+    this.shader.uniforms.view = this.shaderPlugin.viewMatrix;
+    this.shader.uniforms.model = scratch0;
+    this.shader.uniforms.texture = this.texture.bind();
 
     this.mesh.bind();
     this.mesh.draw(gl.TRIANGLES, this.mesh.length);
