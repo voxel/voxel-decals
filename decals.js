@@ -151,10 +151,10 @@ DecalsPlugin.prototype.update = function() {
   var tileIndex = 20; // TODO: configurable texture
 
   // textures loaded from voxel-stitch updateTexture event
-  var atlasUVs = this.stitchPlugin.atlas.uv(); // debugging note: array or not? https://github.com/shama/atlaspack/issues/5
-  var tileUV = atlasUVs.furnace_front_on;
+  var tileUV = this.stitchPlugin.getTextureUV('furnace_front_on');
   if (!tileUV) throw new Error('failed to load texture');
 
+  // cover the texture tile over the two triangles forming a flat plane
   var planeUV = [
     tileUV[3],
     tileUV[0],
@@ -219,7 +219,7 @@ DecalsPlugin.prototype.update = function() {
 var scratch0 = mat4.create();
 
 DecalsPlugin.prototype.render = function() {
-  if (true) {
+  if (this.mesh) {
     var gl = this.shell.gl;
 
     this.shader.bind();
