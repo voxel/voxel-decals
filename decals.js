@@ -53,16 +53,24 @@ DecalsPlugin.prototype.shaderInit = function() {
     inline: true,
     vertex: "/* voxel-decals vertex shader */\
 attribute vec3 position;\
+attribute vec2 uv;\
+\
 uniform mat4 projection;\
 uniform mat4 view;\
 uniform mat4 model;\
+varying vec2 vUv;\
+\
 void main() {\
   gl_Position = projection * view * model * vec4(position, 1.0);\
+  vUv = uv;\
 }",
 
   fragment: "/* voxel-decals fragment shader */\
 precision highp float;\
 uniform vec4 color;\
+\
+varying vec2 vUv;\
+\
 void main() {\
   gl_FragColor = color;\
 }"})(this.shell.gl);
@@ -135,6 +143,7 @@ DecalsPlugin.prototype.update = function() {
   };
 
   var vertices = [];
+  var uvArray = [];
 
   for (var i = 0; i < this.info.length; i += 1) {
     // start with plane corresponding to desired cube face
@@ -148,19 +157,35 @@ DecalsPlugin.prototype.update = function() {
       // and raise out of surface by a small amount to prevent z-fighting
       plane[j] += normal[j % 3] * 0.001;
     }
-    console.log(plane);
 
     vertices = vertices.concat(plane);
+
+    // TODO
+    uvArray = uvArray.concat([0, 0]);
+    uvArray = uvArray.concat([0, 0]);
+    uvArray = uvArray.concat([0, 0]);
+
+    uvArray = uvArray.concat([0, 0]);
+    uvArray = uvArray.concat([0, 0]);
+    uvArray = uvArray.concat([0, 0]);
   }
+
+  var uv = new Float32Array(uvArray);
 
   var gl = this.shell.gl;
 
-  var decalsBuf = createBuffer(gl, new Float32Array(vertices));
+  var verticesBuf = createBuffer(gl, new Float32Array(vertices));
+  var uvBuf = createBuffer(gl, uv);
 
   this.mesh = createVAO(gl, [
-      { buffer: decalsBuf,
+      { buffer: verticesBuf,
         size: 3
-      }]);
+      },
+      {
+        buffer: uvBuf,
+        size: 2
+      }
+      ]);
   this.mesh.length = vertices.length/3;
 };
 
@@ -172,6 +197,7 @@ DecalsPlugin.prototype.render = function() {
 
     this.decalsShader.bind();
     this.decalsShader.attributes.position.location = 0;
+    this.decalsShader.attributes.uv.location = 1;
     this.decalsShader.uniforms.projection = this.shaderPlugin.projectionMatrix;
     this.decalsShader.uniforms.view = this.shaderPlugin.viewMatrix;
     this.decalsShader.uniforms.color = this.colorVector;
