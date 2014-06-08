@@ -26,8 +26,12 @@ function DecalsPlugin(game, opts) {
   this.colorVector = opts.color !== undefined ? opts.color : [0,1,1,1];
 
   this.info = [
-    {position:[0,1,0], side:0},
-    {position:[0,0,0], side:5},
+    {position:[0,0,0], side:0},
+    {position:[0,1,0], side:1},
+    {position:[0,2,0], side:2},
+    {position:[0,3,0], side:3},
+    {position:[0,4,0], side:4},
+    {position:[0,5,0], side:5},
     ];
 
   this.enable();
