@@ -62,10 +62,10 @@ void main() {\
 
 
   var planesVertexArray = new Uint8Array([
-    -1.0,  1.0, -1.0, 1.0,
-    -1.0,  1.0,  1.0, 1.0,
-     1.0,  1.0,  1.0, 1.0,
-     1.0,  1.0, -1.0, 1.0,
+    0, 1, 0, 1,
+    0, 1, 1, 1,
+    1, 1, 1, 1,
+    1, 1, 0, 1,
   ]);
 
   // two adjacent triangles
