@@ -108,6 +108,11 @@ PlanesPlugin.prototype.render = function() {
     for (var i = 0; i < this.info.length; i += 1) {
       mat4.identity(scratch0);
       mat4.translate(scratch0, scratch0, this.info[i].position);
+      // TODO: via normal
+      //mat4.rotateX(scratch0, scratch0, Math.PI/2); // back
+      //mat4.rotateX(scratch0, scratch0, -Math.PI/2); + translate // front
+      //mat4.rotateZ(scratch0, scratch0, -Math.PI/2);
+
       this.planesShader.uniforms.model = scratch0;
 
       this.mesh.bind();
