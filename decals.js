@@ -127,7 +127,15 @@ DecalsPlugin.prototype.update = function() {
   var vertices = [];
 
   for (var i = 0; i < this.info.length; i += 1) {
-    vertices = vertices.concat(cube[this.info[i].side]);
+    // start with plane corresponding to desired cube face
+    var plane = cube[this.info[i].side].slice(0);
+
+    // translate into position
+    for (var j = 0; j < plane.length; j += 1) {
+      plane[j] += this.info[i].position[j % 3];
+    }
+
+    vertices = vertices.concat(plane);
   }
 
   var gl = this.shell.gl;
@@ -153,20 +161,10 @@ DecalsPlugin.prototype.render = function() {
     this.decalsShader.uniforms.projection = this.shaderPlugin.projectionMatrix;
     this.decalsShader.uniforms.view = this.shaderPlugin.viewMatrix;
     this.decalsShader.uniforms.color = this.colorVector;
+    this.decalsShader.uniforms.model = scratch0;
 
-    for (var i = 0; i < this.info.length; i += 1) {
-      mat4.identity(scratch0);
-      mat4.translate(scratch0, scratch0, this.info[i].position);
-      // TODO: via normal
-      //mat4.rotateX(scratch0, scratch0, Math.PI/2); // back
-      //mat4.rotateX(scratch0, scratch0, -Math.PI/2); + translate // front
-      //mat4.rotateZ(scratch0, scratch0, -Math.PI/2);
-
-      this.decalsShader.uniforms.model = scratch0;
-
-      this.mesh.bind();
-      this.mesh.draw(gl.TRIANGLES, this.mesh.length);
-      this.mesh.unbind();
-    }
+    this.mesh.bind();
+    this.mesh.draw(gl.TRIANGLES, this.mesh.length);
+    this.mesh.unbind();
   }
 };
