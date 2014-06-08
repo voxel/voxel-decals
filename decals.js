@@ -67,18 +67,55 @@ void main() {\
 };
 
 DecalsPlugin.prototype.update = function() {
+  // cube vertices - based on box-geometry
   var decalsVertexArray = new Uint8Array([
+    // Back face
+    0, 0, 1,
+    1, 0, 1,
+    1, 1, 1,
+    0, 1, 1,
+
+    // Front face
+    0, 0, 0,
+    0, 1, 0,
+    1, 1, 0,
+    1, 0, 0,
+
+    // Top face
     0, 1, 0,
     0, 1, 1,
     1, 1, 1,
     1, 1, 0,
+
+    // Bottom face
+    0, 0, 0,
+    1, 0, 0,
+    1, 0, 1,
+    0, 0, 1,
+
+    // Left face
+    1, 0, 0,
+    1, 1, 0,
+    1, 1, 1,
+    1, 0, 1,
+
+    // Right face
+    0, 0, 0,
+    0, 0, 1,
+    0, 1, 1,
+    0, 1, 0,
   ]);
 
-  // two adjacent triangles
-  var indexArray = new Uint16Array([
-    0, 1, 2,
-    0, 2, 3,
-  ]);
+  var indices = [
+    0,  1,  2,      0,  2,  3,    // back
+    4,  5,  6,      4,  6,  7,    // front
+    8,  9,  10,     8,  10, 11,   // top
+    12, 13, 14,     12, 14, 15,   // bottom
+    16, 17, 18,     16, 18, 19,   // left
+    20, 21, 22,     20, 22, 23    // right
+  ];
+
+  var indexArray = new Uint16Array(indices);
 
   var decalsVertexCount = indexArray.length;
 
