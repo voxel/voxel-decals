@@ -144,6 +144,20 @@ DecalsPlugin.prototype.update = function() {
   var vertices = [];
   var uvArray = [];
 
+
+  var x = 0;
+  var y = 0;
+  var w = 1;
+  var h = 1;
+  var planeUV = [
+    [x,     y + h],
+    [x,     y    ],
+    [x + w, y    ],
+
+    [x,     y + h],
+    [x + w, y    ],
+    [x + w, y + h]];
+
   for (var i = 0; i < this.info.length; i += 1) {
     // start with plane corresponding to desired cube face
     var normal = this.info[i].normal;
@@ -160,31 +174,17 @@ DecalsPlugin.prototype.update = function() {
     vertices = vertices.concat(plane);
 
     // texturing
-    var x = 0;
-    var y = 0;
-    var w = 1;
-    var h = 1;
     var r = 0;
 
-    uvArray.push(x);
-    uvArray.push(y + h);
+    uvArray.push(planeUV[0][0]); uvArray.push(planeUV[0][1]);
+    uvArray.push(planeUV[1][0]); uvArray.push(planeUV[1][1]);
+    uvArray.push(planeUV[2][0]); uvArray.push(planeUV[2][1]);
 
-    uvArray.push(x);
-    uvArray.push(y);
-
-    uvArray.push(x + w);
-    uvArray.push(y);
-
-
-    uvArray.push(x);
-    uvArray.push(y + h);
-
-    uvArray.push(x + w);
-    uvArray.push(y);
-
-    uvArray.push(x + w);
-    uvArray.push(y + h);
+    uvArray.push(planeUV[3][0]); uvArray.push(planeUV[3][1]);
+    uvArray.push(planeUV[4][0]); uvArray.push(planeUV[4][1]);
+    uvArray.push(planeUV[5][0]); uvArray.push(planeUV[5][1]);
   }
+  console.log(uvArray);
 
   var uv = new Float32Array(uvArray);
 
