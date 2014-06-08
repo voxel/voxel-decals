@@ -154,8 +154,8 @@ DecalsPlugin.prototype.update = function() {
     [x,     y    ],
     [x + w, y    ],
 
-    [x,     y + h],
-    [x + w, y    ],
+    //[x,     y + h],
+    //[x + w, y    ],
     [x + w, y + h]];
 
   for (var i = 0; i < this.info.length; i += 1) {
@@ -180,9 +180,9 @@ DecalsPlugin.prototype.update = function() {
     uvArray.push(planeUV[1][0]); uvArray.push(planeUV[1][1]);
     uvArray.push(planeUV[2][0]); uvArray.push(planeUV[2][1]);
 
+    uvArray.push(planeUV[0][0]); uvArray.push(planeUV[0][1]);
+    uvArray.push(planeUV[2][0]); uvArray.push(planeUV[2][1]);
     uvArray.push(planeUV[3][0]); uvArray.push(planeUV[3][1]);
-    uvArray.push(planeUV[4][0]); uvArray.push(planeUV[4][1]);
-    uvArray.push(planeUV[5][0]); uvArray.push(planeUV[5][1]);
   }
   console.log(uvArray);
 
