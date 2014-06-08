@@ -25,7 +25,9 @@ function PlanesPlugin(game, opts) {
 
   this.colorVector = opts.color !== undefined ? opts.color : [0,1,1,1];
 
-  this.modelMatrix = mat4.create(); // TODO
+  this.info = [{location:[0,1,0]}];
+  this.modelMatrix = mat4.create();
+  mat4.translate(this.modelMatrix, this.modelMatrix, this.info[0].location);
 
   this.enable();
 }
