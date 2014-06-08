@@ -26,8 +26,8 @@ function DecalsPlugin(game, opts) {
   this.colorVector = opts.color !== undefined ? opts.color : [0,1,1,1];
 
   this.info = [
-    {position:[0,1,0]},
-    {position:[0,0,0]},
+    {position:[0,1,0], side:0},
+    {position:[0,0,0], side:5},
     ];
 
   this.enable();
@@ -68,68 +68,78 @@ void main() {\
 
 DecalsPlugin.prototype.update = function() {
   // cube vertices - based on box-geometry
-  var decalsVertexArray = new Uint8Array([
+  var cube = [
     // Back face
-    0, 0, 1,
+    [0, 0, 1,
     1, 0, 1,
     1, 1, 1,
-    0, 1, 1,
+
+    0, 0, 1,
+    1, 1, 1,
+    0, 1, 1],
 
     // Front face
-    0, 0, 0,
+    [0, 0, 0,
     0, 1, 0,
     1, 1, 0,
-    1, 0, 0,
+
+    0, 0, 0,
+    1, 1, 0,
+    1, 0, 0],
 
     // Top face
-    0, 1, 0,
+    [0, 1, 0,
     0, 1, 1,
     1, 1, 1,
-    1, 1, 0,
+
+    0, 1, 0,
+    1, 1, 1,
+    1, 1, 0],
 
     // Bottom face
-    0, 0, 0,
+    [0, 0, 0,
     1, 0, 0,
     1, 0, 1,
-    0, 0, 1,
+
+    0, 0, 0,
+    1, 0, 1,
+    0, 0, 1],
 
     // Left face
-    1, 0, 0,
+    [1, 0, 0,
     1, 1, 0,
     1, 1, 1,
-    1, 0, 1,
+
+    1, 0, 0,
+    1, 1, 1,
+    1, 0, 1],
 
     // Right face
-    0, 0, 0,
+    [0, 0, 0,
     0, 0, 1,
     0, 1, 1,
-    0, 1, 0,
-  ]);
 
-  var indices = [
-    0,  1,  2,      0,  2,  3,    // back
-    4,  5,  6,      4,  6,  7,    // front
-    8,  9,  10,     8,  10, 11,   // top
-    12, 13, 14,     12, 14, 15,   // bottom
-    16, 17, 18,     16, 18, 19,   // left
-    20, 21, 22,     20, 22, 23    // right
+    0, 0, 0,
+    0, 1, 1,
+    0, 1, 0],
   ];
 
-  var indexArray = new Uint16Array(indices);
+  var vertices = [];
 
-  var decalsVertexCount = indexArray.length;
+  for (var i = 0; i < this.info.length; i += 1) {
+    vertices = vertices.concat(cube[this.info[i].side]);
+  }
 
   var gl = this.shell.gl;
 
-  var decalsBuf = createBuffer(gl, decalsVertexArray);
-  var indexBuf = createBuffer(gl, indexArray, gl.ELEMENT_ARRAY_BUFFER);
+  var decalsBuf = createBuffer(gl, new Uint8Array(vertices));
 
   this.mesh = createVAO(gl, [
       { buffer: decalsBuf,
         type: gl.UNSIGNED_BYTE,
         size: 3
-      }], indexBuf);
-  this.mesh.length = decalsVertexCount;
+      }]);
+  this.mesh.length = vertices.length/3;
 };
 
 var scratch0 = mat4.create();
