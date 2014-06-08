@@ -41,9 +41,11 @@ function DecalsPlugin(game, opts) {
 DecalsPlugin.prototype.enable = function() {
   this.shell.on('gl-init', this.onInit = this.shaderInit.bind(this));
   this.shell.on('gl-render', this.onRender = this.render.bind(this));
+  this.stitchPlugin.on('updateTexture', this.onUpdateTexture = this.update.bind(this));
 };
 
 DecalsPlugin.prototype.disable = function() {
+  this.stitchPlugin.removeListener('updateTexture', this.onUpdateTexture);
   this.shell.removeListener('gl-render', this.onRender = this.render.bind(this));
   this.shell.removeListener('gl-init', this.onInit);
 };
@@ -75,8 +77,6 @@ varying vec2 vUv;\
 void main() {\
   gl_FragColor = texture2D(texture, vUv);\
 }"})(this.shell.gl);
-
-  this.update();
 };
 
 DecalsPlugin.prototype.update = function() {
@@ -150,18 +150,18 @@ DecalsPlugin.prototype.update = function() {
   // TODO: configurable texture
   var tileIndex = 20; // TODO: configurable texture
 
-  var w = this.stitchPlugin.tileSize / this.stitchPlugin.atlasSize;
-  var h = w;
-  var x = tileIndex * w;
-  var y = 0;
-  var planeUV = [
-    [x,     y + h],
-    [x,     y    ],
-    [x + w, y    ],
+  // textures loaded from voxel-stitch updateTexture event
+  var atlasUVs = this.stitchPlugin.atlas.uv(); // debugging note: array or not? https://github.com/shama/atlaspack/issues/5
+  var tileUV = atlasUVs.furnace_front_on;
+  if (!tileUV) throw new Error('failed to load texture');
 
-    //[x,     y + h],
-    //[x + w, y    ],
-    [x + w, y + h]];
+  var planeUV = [
+    tileUV[3],
+    tileUV[0],
+    tileUV[1],
+
+    tileUV[2],
+  ];
 
   for (var i = 0; i < this.info.length; i += 1) {
     // start with plane corresponding to desired cube face
