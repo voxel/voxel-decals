@@ -159,14 +159,31 @@ DecalsPlugin.prototype.update = function() {
 
     vertices = vertices.concat(plane);
 
-    // TODO
-    uvArray = uvArray.concat([0, 0]);
-    uvArray = uvArray.concat([0, 0]);
-    uvArray = uvArray.concat([0, 0]);
+    // texturing
+    var x = 0;
+    var y = 0;
+    var w = 1;
+    var h = 1;
+    var r = 0;
 
-    uvArray = uvArray.concat([0, 0]);
-    uvArray = uvArray.concat([0, 0]);
-    uvArray = uvArray.concat([0, 0]);
+    uvArray.push(x);
+    uvArray.push(y + h);
+
+    uvArray.push(x);
+    uvArray.push(y);
+
+    uvArray.push(x + w);
+    uvArray.push(y);
+
+
+    uvArray.push(x);
+    uvArray.push(y + h);
+
+    uvArray.push(x + w);
+    uvArray.push(y);
+
+    uvArray.push(x + w);
+    uvArray.push(y + h);
   }
 
   var uv = new Float32Array(uvArray);
@@ -202,7 +219,7 @@ DecalsPlugin.prototype.render = function() {
     this.decalsShader.uniforms.projection = this.shaderPlugin.projectionMatrix;
     this.decalsShader.uniforms.view = this.shaderPlugin.viewMatrix;
     this.decalsShader.uniforms.model = scratch0;
-    //this.decalsShader.uniforms.texture = this.texture.bind(); // TODO
+    this.decalsShader.uniforms.texture = this.texture.bind();
 
     this.mesh.bind();
     this.mesh.draw(gl.TRIANGLES, this.mesh.length);
