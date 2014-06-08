@@ -1,4 +1,4 @@
-# voxel-planes
+# voxel-decals
 
 ## License
 

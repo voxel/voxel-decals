@@ -1,11 +1,11 @@
 {
-  "name": "voxel-planes",
+  "name": "voxel-decals",
   "description": "",
   "version": "0.0.1",
-  "main": "planes.js",
+  "main": "decals.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:deathcap/voxel-planes.git"
+    "url": "git@github.com:deathcap/voxel-decals.git"
   },
   "keywords": [
     "voxel"

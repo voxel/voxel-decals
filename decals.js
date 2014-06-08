@@ -7,21 +7,21 @@ var glm = require('gl-matrix');
 var mat4 = glm.mat4;
 
 module.exports = function(game, opts) {
-  return new PlanesPlugin(game, opts);
+  return new DecalsPlugin(game, opts);
 };
 module.exports.pluginInfo = {
   loadAfter: ['voxel-mesher', 'voxel-shader']
 };
 
-function PlanesPlugin(game, opts) {
+function DecalsPlugin(game, opts) {
   this.game = game;
   this.shell = game.shell;
 
   this.mesherPlugin = game.plugins.get('voxel-mesher');
-  if (!this.mesherPlugin) throw new Error('voxel-planes requires voxel-mesher');
+  if (!this.mesherPlugin) throw new Error('voxel-decals requires voxel-mesher');
 
   this.shaderPlugin = game.plugins.get('voxel-shader');
-  if (!this.shaderPlugin) throw new Error('voxel-planes requires voxel-shader');
+  if (!this.shaderPlugin) throw new Error('voxel-decals requires voxel-shader');
 
   this.colorVector = opts.color !== undefined ? opts.color : [0,1,1,1];
 
@@ -33,21 +33,21 @@ function PlanesPlugin(game, opts) {
   this.enable();
 }
 
-PlanesPlugin.prototype.enable = function() {
+DecalsPlugin.prototype.enable = function() {
   this.shell.on('gl-init', this.onInit = this.shaderInit.bind(this));
   this.shell.on('gl-render', this.onRender = this.render.bind(this));
 };
 
-PlanesPlugin.prototype.disable = function() {
+DecalsPlugin.prototype.disable = function() {
   this.shell.removeListener('gl-render', this.onRender = this.render.bind(this));
   this.shell.removeListener('gl-init', this.onInit);
 };
 
-PlanesPlugin.prototype.shaderInit = function() {
-  // TODO: refactor with voxel-planes, voxel-chunkborder?
-  this.planesShader = glslify({
+DecalsPlugin.prototype.shaderInit = function() {
+  // TODO: refactor with voxel-decals, voxel-chunkborder?
+  this.decalsShader = glslify({
     inline: true,
-    vertex: "/* voxel-planes vertex shader */\
+    vertex: "/* voxel-decals vertex shader */\
 attribute vec3 position;\
 uniform mat4 projection;\
 uniform mat4 view;\
@@ -56,7 +56,7 @@ void main() {\
   gl_Position = projection * view * model * vec4(position, 1.0);\
 }",
 
-  fragment: "/* voxel-planes fragment shader */\
+  fragment: "/* voxel-decals fragment shader */\
 precision highp float;\
 uniform vec4 color;\
 void main() {\
@@ -64,7 +64,7 @@ void main() {\
 }"})(this.shell.gl);
 
 
-  var planesVertexArray = new Uint8Array([
+  var decalsVertexArray = new Uint8Array([
     0, 1, 0, 1,
     0, 1, 1, 1,
     1, 1, 1, 1,
@@ -77,33 +77,33 @@ void main() {\
     0, 2, 3,
   ]);
 
-  var planesVertexCount = indexArray.length;
+  var decalsVertexCount = indexArray.length;
 
   var gl = this.shell.gl;
 
-  var planesBuf = createBuffer(gl, planesVertexArray);
+  var decalsBuf = createBuffer(gl, decalsVertexArray);
   var indexBuf = createBuffer(gl, indexArray, gl.ELEMENT_ARRAY_BUFFER);
 
   this.mesh = createVAO(gl, [
-      { buffer: planesBuf,
+      { buffer: decalsBuf,
         type: gl.UNSIGNED_BYTE,
         size: 4
       }], indexBuf);
-  this.mesh.length = planesVertexCount;
+  this.mesh.length = decalsVertexCount;
 };
 
 
 var scratch0 = mat4.create();
 
-PlanesPlugin.prototype.render = function() {
+DecalsPlugin.prototype.render = function() {
   if (true) {
     var gl = this.shell.gl;
 
-    this.planesShader.bind();
-    this.planesShader.attributes.position.location = 0;
-    this.planesShader.uniforms.projection = this.shaderPlugin.projectionMatrix;
-    this.planesShader.uniforms.view = this.shaderPlugin.viewMatrix;
-    this.planesShader.uniforms.color = this.colorVector;
+    this.decalsShader.bind();
+    this.decalsShader.attributes.position.location = 0;
+    this.decalsShader.uniforms.projection = this.shaderPlugin.projectionMatrix;
+    this.decalsShader.uniforms.view = this.shaderPlugin.viewMatrix;
+    this.decalsShader.uniforms.color = this.colorVector;
 
     for (var i = 0; i < this.info.length; i += 1) {
       mat4.identity(scratch0);
@@ -113,7 +113,7 @@ PlanesPlugin.prototype.render = function() {
       //mat4.rotateX(scratch0, scratch0, -Math.PI/2); + translate // front
       //mat4.rotateZ(scratch0, scratch0, -Math.PI/2);
 
-      this.planesShader.uniforms.model = scratch0;
+      this.decalsShader.uniforms.model = scratch0;
 
       this.mesh.bind();
       this.mesh.draw(gl.TRIANGLES, this.mesh.length);
