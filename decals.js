@@ -26,13 +26,13 @@ function DecalsPlugin(game, opts) {
   this.colorVector = opts.color !== undefined ? opts.color : [0,1,1,1];
 
   this.info = [
-    {position:[0,0,0], side:0},
-    {position:[0,1,0], side:1},
-    {position:[0,2,0], side:2},
-    {position:[0,3,0], side:3},
-    {position:[0,4,0], side:4},
-    {position:[0,5,0], side:5},
-    ];
+    {position:[0,0,0], normal:[-1,0,0]},
+    {position:[0,1,0], normal:[1,0,0]},
+    {position:[0,2,0], normal:[0,1,0]},
+    {position:[0,3,0], normal:[0,-1,0]},
+    {position:[0,4,0], normal:[0,0,1]},
+    {position:[0,5,0], normal:[0,0,-1]},
+  ];
 
   this.enable();
 }
@@ -71,10 +71,11 @@ void main() {\
 };
 
 DecalsPlugin.prototype.update = function() {
-  // cube vertices - based on box-geometry
-  var cube = [
+  // cube face vertices, indexed by normal (based on box-geometry)
+  var cube = {
     // Back face
-    [0, 0, 1,
+    '-1|0|0': [
+    0, 0, 1,
     1, 0, 1,
     1, 1, 1,
 
@@ -83,7 +84,8 @@ DecalsPlugin.prototype.update = function() {
     0, 1, 1],
 
     // Front face
-    [0, 0, 0,
+    '1|0|0': [
+    0, 0, 0,
     0, 1, 0,
     1, 1, 0,
 
@@ -92,7 +94,8 @@ DecalsPlugin.prototype.update = function() {
     1, 0, 0],
 
     // Top face
-    [0, 1, 0,
+    '0|1|0': [
+    0, 1, 0,
     0, 1, 1,
     1, 1, 1,
 
@@ -101,7 +104,8 @@ DecalsPlugin.prototype.update = function() {
     1, 1, 0],
 
     // Bottom face
-    [0, 0, 0,
+    '0|-1|0': [
+    0, 0, 0,
     1, 0, 0,
     1, 0, 1,
 
@@ -110,7 +114,8 @@ DecalsPlugin.prototype.update = function() {
     0, 0, 1],
 
     // Left face
-    [1, 0, 0,
+    '0|0|1': [
+    1, 0, 0,
     1, 1, 0,
     1, 1, 1,
 
@@ -119,20 +124,22 @@ DecalsPlugin.prototype.update = function() {
     1, 0, 1],
 
     // Right face
-    [0, 0, 0,
+    '0|0|-1': [
+    0, 0, 0,
     0, 0, 1,
     0, 1, 1,
 
     0, 0, 0,
     0, 1, 1,
     0, 1, 0],
-  ];
+  };
 
   var vertices = [];
 
   for (var i = 0; i < this.info.length; i += 1) {
     // start with plane corresponding to desired cube face
-    var plane = cube[this.info[i].side].slice(0);
+    var normal = this.info[i].normal;
+    var plane = cube[normal.join('|')].slice(0);
 
     // translate into position
     for (var j = 0; j < plane.length; j += 1) {
