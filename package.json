@@ -14,7 +14,8 @@
     "glslify": "^1.4.0",
     "gl-matrix": "^2.2.1",
     "gl-buffer": "^2.0.6",
-    "gl-vao": "^1.1.2"
+    "gl-vao": "^1.1.2",
+    "gl-texture2d": "^1.0.1"
   },
   "browserify": {
     "transform": [

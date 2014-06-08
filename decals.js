@@ -2,6 +2,7 @@
 
 var createBuffer = require('gl-buffer');
 var createVAO = require('gl-vao');
+var createTexture = require('gl-texture2d');
 var glslify = require('glslify');
 var glm = require('gl-matrix');
 var mat4 = glm.mat4;
@@ -22,8 +23,6 @@ function DecalsPlugin(game, opts) {
 
   this.shaderPlugin = game.plugins.get('voxel-shader');
   if (!this.shaderPlugin) throw new Error('voxel-decals requires voxel-shader');
-
-  this.colorVector = opts.color !== undefined ? opts.color : [0,1,1,1];
 
   this.info = [
     {position:[0,0,0], normal:[-1,0,0]},
@@ -67,12 +66,12 @@ void main() {\
 
   fragment: "/* voxel-decals fragment shader */\
 precision highp float;\
-uniform vec4 color;\
 \
+uniform sampler2D texture;\
 varying vec2 vUv;\
 \
 void main() {\
-  gl_FragColor = color;\
+  gl_FragColor = texture2D(texture, vUv);\
 }"})(this.shell.gl);
 
   this.update();
@@ -187,6 +186,8 @@ DecalsPlugin.prototype.update = function() {
       }
       ]);
   this.mesh.length = vertices.length/3;
+
+  this.texture = createTexture(gl, require('lena'));
 };
 
 var scratch0 = mat4.create();
@@ -200,8 +201,8 @@ DecalsPlugin.prototype.render = function() {
     this.decalsShader.attributes.uv.location = 1;
     this.decalsShader.uniforms.projection = this.shaderPlugin.projectionMatrix;
     this.decalsShader.uniforms.view = this.shaderPlugin.viewMatrix;
-    this.decalsShader.uniforms.color = this.colorVector;
     this.decalsShader.uniforms.model = scratch0;
+    //this.decalsShader.uniforms.texture = this.texture.bind(); // TODO
 
     this.mesh.bind();
     this.mesh.draw(gl.TRIANGLES, this.mesh.length);
