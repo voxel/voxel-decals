@@ -25,9 +25,10 @@ function PlanesPlugin(game, opts) {
 
   this.colorVector = opts.color !== undefined ? opts.color : [0,1,1,1];
 
-  this.info = [{location:[0,1,0]}];
-  this.modelMatrix = mat4.create();
-  mat4.translate(this.modelMatrix, this.modelMatrix, this.info[0].location);
+  this.info = [
+    {position:[0,1,0]},
+    {position:[0,0,0]},
+    ];
 
   this.enable();
 }
@@ -83,16 +84,16 @@ void main() {\
   var planesBuf = createBuffer(gl, planesVertexArray);
   var indexBuf = createBuffer(gl, indexArray, gl.ELEMENT_ARRAY_BUFFER);
 
-  var planesVAO = createVAO(gl, [
+  this.mesh = createVAO(gl, [
       { buffer: planesBuf,
         type: gl.UNSIGNED_BYTE,
         size: 4
       }], indexBuf);
-  planesVAO.length = planesVertexCount;
-
-  this.mesh = planesVAO;
+  this.mesh.length = planesVertexCount;
 };
 
+
+var scratch0 = mat4.create();
 
 PlanesPlugin.prototype.render = function() {
   if (true) {
@@ -103,10 +104,15 @@ PlanesPlugin.prototype.render = function() {
     this.planesShader.uniforms.projection = this.shaderPlugin.projectionMatrix;
     this.planesShader.uniforms.view = this.shaderPlugin.viewMatrix;
     this.planesShader.uniforms.color = this.colorVector;
-    this.planesShader.uniforms.model = this.modelMatrix;
-    var planesVAO = this.mesh;
-    planesVAO.bind();
-    planesVAO.draw(gl.TRIANGLES, planesVAO.length);
-    planesVAO.unbind();
+
+    for (var i = 0; i < this.info.length; i += 1) {
+      mat4.identity(scratch0);
+      mat4.translate(scratch0, scratch0, this.info[i].position);
+      this.planesShader.uniforms.model = scratch0;
+
+      this.mesh.bind();
+      this.mesh.draw(gl.TRIANGLES, this.mesh.length);
+      this.mesh.unbind();
+    }
   }
 };
