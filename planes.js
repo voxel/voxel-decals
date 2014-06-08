@@ -41,7 +41,7 @@ PlanesPlugin.prototype.disable = function() {
 };
 
 PlanesPlugin.prototype.shaderInit = function() {
-  // TODO: refactor with voxel-outline, voxel-chunkborder?
+  // TODO: refactor with voxel-planes, voxel-chunkborder?
   this.planesShader = glslify({
     inline: true,
     vertex: "/* voxel-planes vertex shader */\
@@ -61,45 +61,34 @@ void main() {\
 }"})(this.shell.gl);
 
 
-  // copied from voxel-outline for now
-  // TODO: plane, not box! + texturing
-
-  var epsilon = 0.001;
-  var w = 1 + epsilon;
-  var outlineVertexArray = new Uint8Array([
-    0,0,0,
-    0,0,w,
-    0,w,0,
-    0,w,w,
-    w,0,0,
-    w,0,w,
-    w,w,0,
-    w,w,w
+  var planesVertexArray = new Uint8Array([
+    -1.0,  1.0, -1.0, 1.0,
+    -1.0,  1.0,  1.0, 1.0,
+     1.0,  1.0,  1.0, 1.0,
+     1.0,  1.0, -1.0, 1.0,
   ]);
 
+  // two adjacent triangles
   var indexArray = new Uint16Array([
-    0,1, 0,2, 2,3, 3,1,
-    0,4, 4,5, 5,1,
-    5,7, 7,3,
-    7,6, 6,2,
-    6,4
+    0, 1, 2,
+    0, 2, 3,
   ]);
 
-  var outlineVertexCount = indexArray.length;
+  var planesVertexCount = indexArray.length;
 
   var gl = this.shell.gl;
 
-  var outlineBuf = createBuffer(gl, outlineVertexArray);
+  var planesBuf = createBuffer(gl, planesVertexArray);
   var indexBuf = createBuffer(gl, indexArray, gl.ELEMENT_ARRAY_BUFFER);
 
-  var outlineVAO = createVAO(gl, [
-      { buffer: outlineBuf,
+  var planesVAO = createVAO(gl, [
+      { buffer: planesBuf,
         type: gl.UNSIGNED_BYTE,
-        size: 3
+        size: 4
       }], indexBuf);
-  outlineVAO.length = outlineVertexCount;
+  planesVAO.length = planesVertexCount;
 
-  this.mesh = outlineVAO;
+  this.mesh = planesVAO;
 };
 
 
@@ -115,7 +104,7 @@ PlanesPlugin.prototype.render = function() {
     this.planesShader.uniforms.model = this.modelMatrix;
     var planesVAO = this.mesh;
     planesVAO.bind();
-    planesVAO.draw(gl.LINES, planesVAO.length);
+    planesVAO.draw(gl.TRIANGLES, planesVAO.length);
     planesVAO.unbind();
   }
 };
