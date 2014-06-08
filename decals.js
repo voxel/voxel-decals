@@ -229,8 +229,8 @@ DecalsPlugin.prototype.render = function() {
     this.shader.uniforms.view = this.shaderPlugin.viewMatrix;
     this.shader.uniforms.model = scratch0;
 
-    // use same atlas from voxel-shader TODO: can we reliably avoid binding? if already bound, seems to reuse TODO 2: get texture from stitchPlugin, more direct
-    if (this.shaderPlugin.texture) this.shader.uniforms.texture = this.shaderPlugin.texture.bind();
+    // use same atlas from voxel-shader TODO: can we reliably avoid binding? if already bound, seems to reuse
+    if (this.stitchPlugin.texture) this.shader.uniforms.texture = this.stitchPlugin.texture.bind();
 
     this.mesh.bind();
     this.mesh.draw(gl.TRIANGLES, this.mesh.length);
