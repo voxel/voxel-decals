@@ -10,7 +10,7 @@ module.exports = function(game, opts) {
   return new DecalsPlugin(game, opts);
 };
 module.exports.pluginInfo = {
-  loadAfter: ['voxel-mesher', 'voxel-shader']
+  loadAfter: ['voxel-mesher', 'voxel-shader', 'voxel-stitch']
 };
 
 function DecalsPlugin(game, opts) {
@@ -22,6 +22,9 @@ function DecalsPlugin(game, opts) {
 
   this.shaderPlugin = game.plugins.get('voxel-shader');
   if (!this.shaderPlugin) throw new Error('voxel-decals requires voxel-shader');
+
+  this.stitchPlugin = game.plugins.get('voxel-stitch');
+  if (!this.stitchPlugin) throw new Error('voxel-stitch requires voxel-shader');
 
   this.info = [
     {position:[0,0,0], normal:[-1,0,0]},
@@ -147,8 +150,8 @@ DecalsPlugin.prototype.update = function() {
   // TODO: configurable texture
   var x = 0;
   var y = 0;
-  var w = 16/1024;
-  var h = 16/1024;
+  var w = this.stitchPlugin.tileSize / (this.stitchPlugin.atlasSize * this.stitchPlugin.tilePad);
+  var h = w;
   var planeUV = [
     [x,     y + h],
     [x,     y    ],
@@ -224,7 +227,7 @@ DecalsPlugin.prototype.render = function() {
     this.shader.uniforms.view = this.shaderPlugin.viewMatrix;
     this.shader.uniforms.model = scratch0;
 
-    // use same atlas from voxel-shader TODO: can we reliably avoid binding? if already bound, seems to reuse
+    // use same atlas from voxel-shader TODO: can we reliably avoid binding? if already bound, seems to reuse TODO 2: get texture from stitchPlugin, more direct
     if (this.shaderPlugin.texture) this.shader.uniforms.texture = this.shaderPlugin.texture.bind();
 
     this.mesh.bind();
