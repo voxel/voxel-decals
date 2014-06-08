@@ -63,7 +63,10 @@ void main() {\
   gl_FragColor = color;\
 }"})(this.shell.gl);
 
+  this.update();
+};
 
+DecalsPlugin.prototype.update = function() {
   var decalsVertexArray = new Uint8Array([
     0, 1, 0,
     0, 1, 1,
@@ -91,7 +94,6 @@ void main() {\
       }], indexBuf);
   this.mesh.length = decalsVertexCount;
 };
-
 
 var scratch0 = mat4.create();
 
