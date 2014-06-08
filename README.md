@@ -1,0 +1,6 @@
+# voxel-planes
+
+## License
+
+MIT
+
