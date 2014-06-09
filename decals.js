@@ -54,7 +54,7 @@ DecalsPlugin.prototype.remove = function(position) {
   }
   if (found === undefined) return;
 
-  this.info[i].splice(found, 1);
+  this.info.splice(found, 1);
 };
 
 DecalsPlugin.prototype.change = function(info) {
