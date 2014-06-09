@@ -38,6 +38,30 @@ function DecalsPlugin(game, opts) {
   this.enable();
 }
 
+DecalsPlugin.prototype.add = function(info) {
+  this.info.push(info);
+};
+
+DecalsPlugin.prototype.remove = function(position) {
+  var found = undefined;
+  for (var i = 0; i < this.info.length; i += 1) { // TODO: optimize to a map if this is too inefficient
+    if (this.info[i].position[0] === position[0] &&
+        this.info[i].position[1] === position[1] &&
+        this.info[i].position[2] === position[2]) {
+      found = i;
+      break;
+    }
+  }
+  if (found === undefined) return;
+
+  this.info[i].splice(found, 1);
+};
+
+DecalsPlugin.prototype.change = function(info) {
+  this.remove(info.position);
+  this.add(info); // TODO: optimize to change without removing if necessary
+};
+
 DecalsPlugin.prototype.enable = function() {
   this.shell.on('gl-init', this.onInit = this.shaderInit.bind(this));
   this.shell.on('gl-render', this.onRender = this.render.bind(this));
