@@ -1,6 +1,6 @@
 {
   "name": "voxel-decals",
-  "description": "",
+  "description": "add textured planes to block faces (voxel.js plugin)",
   "version": "0.0.1",
   "main": "decals.js",
   "repository": {
@@ -8,7 +8,11 @@
     "url": "git@github.com:deathcap/voxel-decals.git"
   },
   "keywords": [
-    "voxel"
+    "voxel",
+    "plugin",
+    "decal",
+    "texture",
+    "blocks"
   ],
   "dependencies": {
     "glslify": "^1.4.0",
