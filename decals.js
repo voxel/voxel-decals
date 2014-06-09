@@ -26,7 +26,9 @@ function DecalsPlugin(game, opts) {
   this.stitchPlugin = game.plugins.get('voxel-stitch');
   if (!this.stitchPlugin) throw new Error('voxel-stitch requires voxel-shader');
 
-  this.info = [
+  this.info = []
+  /* for testing
+  [
     {position:[0,0,0], normal:[-1,0,0], texture:'furnace_top'},
     {position:[0,1,0], normal:[+1,0,0], texture:'furnace_top'},
     {position:[0,2,0], normal:[0,+1,0], texture:'furnace_top'},
@@ -34,6 +36,7 @@ function DecalsPlugin(game, opts) {
     {position:[0,4,0], normal:[0,0,+1], texture:'furnace_front_on'},
     {position:[0,5,0], normal:[0,0,-1], texture:'furnace_top'},
   ];
+  */
 
   this.enable();
 }
