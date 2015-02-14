@@ -3,8 +3,7 @@
 var createBuffer = require('gl-buffer');
 var createVAO = require('gl-vao');
 var glslify = require('glslify');
-var glm = require('gl-matrix');
-var mat4 = glm.mat4;
+var mat4 = require('gl-mat4');
 
 module.exports = function(game, opts) {
   return new DecalsPlugin(game, opts);
