@@ -15,7 +15,7 @@
     "blocks"
   ],
   "dependencies": {
-    "glslify": "^1.4.0",
+    "glslify": "^1.6.0",
     "gl-mat4": "^1.1.2",
     "gl-buffer": "^2.0.6",
     "gl-vao": "^1.1.2"
