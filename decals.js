@@ -44,14 +44,31 @@ DecalsPlugin.prototype.add = function(info) {
   this.info.push(info);
 };
 
-DecalsPlugin.prototype.remove = function(position) {
+DecalsPlugin.prototype.remove = function(info) {
   var found = undefined;
-  for (var i = 0; i < this.info.length; i += 1) { // TODO: optimize to a map if this is too inefficient
-    if (this.info[i].position[0] === position[0] &&
-        this.info[i].position[1] === position[1] &&
-        this.info[i].position[2] === position[2]) {
-      found = i;
-      break;
+
+  if (Array.isArray(info)) {
+    // backwards compatibility - passed array, only match location
+    var position = info;
+    for (var i = 0; i < this.info.length; i += 1) {
+      if (this.info[i].position[0] === position[0] &&
+          this.info[i].position[1] === position[1] &&
+          this.info[i].position[2] === position[2]) {
+        found = i;
+        break;
+      }
+    }
+  } else {
+    for (var i = 0; i < this.info.length; i += 1) { // TODO: optimize to a map if this is too inefficient
+      if (this.info[i].position[0] === info.position[0] &&
+          this.info[i].position[1] === info.position[1] &&
+          this.info[i].position[2] === info.position[2] &&
+          this.info[i].normal[0] == info.normal[0] &&
+          this.info[i].normal[1] == info.normal[1] &&
+          this.info[i].normal[2] == info.normal[2]) {
+        found = i;
+        break;
+      }
     }
   }
   if (found === undefined) return;
@@ -60,7 +77,7 @@ DecalsPlugin.prototype.remove = function(position) {
 };
 
 DecalsPlugin.prototype.change = function(info) {
-  this.remove(info.position);
+  this.remove(info);
   this.add(info); // TODO: optimize to change without removing if necessary
 };
 

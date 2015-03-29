@@ -24,7 +24,7 @@ using `preloadTexture()` if needed.
 
 * `change({position: [x,y,z], normal: [x,y,z], texture: texture})`: same as add() but calls remove() first
 
-* `remove([x,y,z])`: removes the decal at the given location
+* `remove({position: [x,y,z], normal: [x,y,z]})`: removes the decal at the given location
 
 ## License
 
