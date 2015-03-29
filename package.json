@@ -1,7 +1,7 @@
 {
   "name": "voxel-decals",
   "description": "add textured planes to block faces (voxel.js plugin)",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "main": "decals.js",
   "repository": {
     "type": "git",
