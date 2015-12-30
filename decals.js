@@ -2,6 +2,7 @@
 
 var createBuffer = require('gl-buffer');
 var createVAO = require('gl-vao');
+var glShader = require('gl-shader');
 var glslify = require('glslify');
 var mat4 = require('gl-mat4');
 
@@ -95,9 +96,8 @@ DecalsPlugin.prototype.disable = function() {
 
 DecalsPlugin.prototype.shaderInit = function() {
   // TODO: refactor with voxel-decals, voxel-chunkborder?
-  this.shader = glslify({
-    inline: true,
-    vertex: "/* voxel-decals vertex shader */\
+  this.shader = glShader(this.shell.gl,
+    glslify("/* voxel-decals vertex shader */\
 attribute vec3 position;\
 attribute vec2 uv;\
 \
@@ -109,9 +109,9 @@ varying vec2 vUv;\
 void main() {\
   gl_Position = projection * view * model * vec4(position, 1.0);\
   vUv = uv;\
-}",
+}", {inline: true}),
 
-  fragment: "/* voxel-decals fragment shader */\
+    glslify("/* voxel-decals fragment shader */\
 precision highp float;\
 \
 uniform sampler2D texture;\
@@ -119,7 +119,7 @@ varying vec2 vUv;\
 \
 void main() {\
   gl_FragColor = texture2D(texture, vUv);\
-}"})(this.shell.gl);
+}", {inline: true}));
 };
 
 DecalsPlugin.prototype.update = function() {
